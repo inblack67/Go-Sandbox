@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"github.com/gorilla/mux"
 )
 
 // Story ...
@@ -28,11 +29,16 @@ func homePage(w http.ResponseWriter, r *http.Request){
 }
 
 func handleRequest(){
-	PORT := "8080"
-	http.HandleFunc("/api", homePage)
-	http.HandleFunc("/api/stories", getAllStories)
+
+	router := mux.NewRouter()
+
+	router.HandleFunc("/api", homePage).Methods("GET")
+
+	router.HandleFunc("/api/stories", getAllStories).Methods("GET")
+
+	PORT := "5000"
 	fmt.Println("Server starting on port...", PORT)
-	log.Fatal(http.ListenAndServe(":" + PORT, nil))
+	log.Fatal(http.ListenAndServe(":" + PORT, router))
 }
 
 func main(){
